@@ -1,6 +1,7 @@
 import React from 'react';
 import InputField from '../InputField';
 import Button from '../../ui/button';
+import { useToast } from '../../../contexts';
 
 const AuthForm = ({
   isUserFresh,
@@ -15,6 +16,7 @@ const AuthForm = ({
   setShowPassword,
   setShowConfirmPassword
 }) => {
+  const toast = useToast();
   return (
     <div className="space-y-3">
       {/* Username Field (only for new users) */}
@@ -98,7 +100,7 @@ const AuthForm = ({
       {/* Forgot Password (only for existing users) */}
       {!isUserFresh && (
         <div className="text-center mt-3">
-          <button className="text-white/60 hover:text-white/80 text-xs transition-opacity duration-200">
+          <button onClick={()=> toast.info('forget password coming soon!')} className="text-white/60 hover:text-white/80 text-xs transition-opacity duration-200">
             Forgot Password?
           </button>
         </div>

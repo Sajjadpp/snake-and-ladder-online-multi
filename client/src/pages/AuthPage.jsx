@@ -18,7 +18,7 @@ const AuthPage = () => {
     <PageLayout background="bg-gray-600">
       <Header onBack={authForm.handleBack} />
       
-      <div className="flex-1 flex items-center justify-center px-4 py-6">
+      <div className="flex-1 flex items-center justify-center px-4 py-6 pt-10">
         <div className="w-full max-w-sm">
           <WelcomeSection isUserFresh={authForm.isUserFresh} />
           <AuthForm {...authForm} />

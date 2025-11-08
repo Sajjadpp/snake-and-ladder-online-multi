@@ -1,15 +1,25 @@
 {
-  "name": "Snake&Ladder",
-  "short_name": "Snake&Ladder",
-  "start_url": ".",
+  "name": "Snake & Ladder",
+  "short_name": "SnakeLadder",
+  "description": "Play Snake & Ladder online with friends",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#4b5563",
-  "theme_color": "#4b5563",
+  "background_color": "#1f2937",
+  "theme_color": "#ed8936",
+  "orientation": "portrait",
+  "categories": ["game", "entertainment"],
   "icons": [
     {
-      "src": "icon.png",
+      "src": "snake&ladder.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "snake&ladder.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

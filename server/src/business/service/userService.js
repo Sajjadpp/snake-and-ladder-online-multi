@@ -10,7 +10,7 @@ class UserService {
 
         const isExist = await userRepository.findByMobile(mobile);
         if(isExist) {
-            return this.loginUser(mobile, password)
+            return this.loginUser({mobile, password})
         }
         // Validate password and cPass
         if(password && confirmPassword & password === confirmPassword) {
@@ -36,6 +36,7 @@ class UserService {
     }
 
     async loginUser({mobile, password}) {
+        console.log(mobile,"mobile")
         const user = await userRepository.findUserForLogin(mobile);
         if(!user) {
             throw Error("USER_NOT_FOUND");
@@ -82,7 +83,7 @@ class UserService {
         if(!userData.mobile || !userData.password) {
             throw Error("CREDENCIAL_NOT_FOUND");
         }
-        if(!userData.email?.length && !userData.username?.length) {
+        if(!userData.confirmPassword?.length && !userData.username?.length) {
             return this.loginUser({mobile: userData.mobile, password:userData.password});
         }
         else {

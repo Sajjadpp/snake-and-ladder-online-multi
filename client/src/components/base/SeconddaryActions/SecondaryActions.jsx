@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Trophy, Crown } from 'lucide-react';
 
 // Components
-import Button from '../../ui/Button';
+import Button from '../../ui/button';
 
 // Utils
 import { ANIMATION_VARIANTS } from '../../../utils/constants';
