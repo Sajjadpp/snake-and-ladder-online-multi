@@ -1,0 +1,249 @@
+/* PlayingPiece.css */
+.playing-piece {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Base piece styles */
+.piece-classic,
+.piece-modern,
+.piece-flat,
+.piece-3d,
+.piece-minimal,
+.piece-character {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+/* Specific style enhancements */
+.piece-classic {
+  transform: rotate(-5deg);
+}
+
+.piece-modern {
+  border-radius: 35% 65% 65% 35% / 35% 35% 65% 65%;
+}
+
+.piece-3d {
+  transform-style: preserve-3d;
+}
+
+.piece-minimal {
+  opacity: 0.9;
+}
+
+.piece-character {
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+}
+
+/* Size variants */
+.playing-piece.size-xs {
+  transform: scale(0.8);
+}
+
+.playing-piece.size-sm {
+  transform: scale(0.9);
+}
+
+.playing-piece.size-md {
+  transform: scale(1);
+}
+
+.playing-piece.size-lg {
+  transform: scale(1.1);
+}
+
+.playing-piece.size-xl {
+  transform: scale(1.2);
+}
+
+/* Animation states */
+.playing-piece.animating {
+  animation: pieceBounce 0.6s ease-in-out infinite;
+  z-index: 100;
+}
+
+.playing-piece.current-turn {
+  animation: glowPulse 2s ease-in-out infinite;
+  z-index: 10;
+}
+
+.playing-piece:hover:not(.animating) {
+  transform: scale(1.1) translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* Turn indicator */
+.turn-indicator {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border: 2px solid white;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+/* Piece number/emoji styling */
+.piece-number,
+.piece-emoji {
+  pointer-events: none;
+  user-select: none;
+}
+
+.piece-emoji {
+  line-height: 1;
+  margin-top: -2px;
+}
+
+/* Animations */
+@keyframes pieceBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 0 rgba(34, 197, 94, 0.4),
+      0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 6px rgba(34, 197, 94, 0.2),
+      0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes winCelebration {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.3) rotate(90deg);
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+  }
+  75% {
+    transform: scale(1.3) rotate(270deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+/* Special states */
+.playing-piece.winner {
+  animation: winCelebration 2s ease-in-out;
+}
+
+.playing-piece.moving {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+.playing-piece.recent-move {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Stacking multiple pieces */
+.playing-piece.stacked {
+  margin-left: -4px;
+  margin-bottom: -4px;
+}
+
+.playing-piece.stacked:nth-child(1) { z-index: 4; }
+.playing-piece.stacked:nth-child(2) { z-index: 3; }
+.playing-piece.stacked:nth-child(3) { z-index: 2; }
+.playing-piece.stacked:nth-child(4) { z-index: 1; }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .playing-piece.size-xl {
+    transform: scale(1);
+  }
+  
+  .playing-piece.size-lg {
+    transform: scale(0.9);
+  }
+  
+  .turn-indicator {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .playing-piece {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .playing-piece {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .playing-piece.animating,
+  .playing-piece.current-turn {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .piece-classic,
+  .piece-modern,
+  .piece-3d {
+    box-shadow: 
+      inset 1px 1px 2px rgba(255, 255, 255, 0.2),
+      inset -1px -1px 2px rgba(0, 0, 0, 0.4),
+      0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}

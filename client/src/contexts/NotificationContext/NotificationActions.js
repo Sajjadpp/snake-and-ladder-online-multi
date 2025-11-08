@@ -1,0 +1,28 @@
+// constants/notificationActions.js
+export const NOTIFICATION_ACTIONS = {
+  // Loading states
+  SET_LOADING: 'SET_LOADING',
+  SET_PAGINATION_LOADING: 'SET_PAGINATION_LOADING',
+  
+  // Notifications data
+  SET_NOTIFICATIONS: 'SET_NOTIFICATIONS',
+  ADD_NOTIFICATIONS: 'ADD_NOTIFICATIONS', // For pagination
+  ADD_NOTIFICATION: 'ADD_NOTIFICATION', // Single notification
+  
+  // Read states
+  MARK_AS_READ: 'MARK_AS_READ',
+  MARK_ALL_AS_READ: 'MARK_ALL_AS_READ',
+  
+  // Delete operations
+  DELETE_NOTIFICATION: 'DELETE_NOTIFICATION',
+  DELETE_ALL_READ: 'DELETE_ALL_READ',
+  CLEAR_ALL: 'CLEAR_ALL',
+  
+  // Count and metadata
+  SET_UNREAD_COUNT: 'SET_UNREAD_COUNT',
+  SET_PAGINATION: 'SET_PAGINATION',
+  
+  // Error handling
+  SET_ERROR: 'SET_ERROR',
+  CLEAR_ERROR: 'CLEAR_ERROR'
+};

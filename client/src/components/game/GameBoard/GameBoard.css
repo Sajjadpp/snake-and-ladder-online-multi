@@ -1,0 +1,860 @@
+/* GameBoard.css */
+
+/* GameBoard Container */
+.game-board-container {
+  width: 100%;
+  max-width: min(80vh, 90vw);
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Main Game Board */
+.game-board {
+  width: 100%;
+  aspect-ratio: 1;
+  background-size: 100% 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  padding: 2.5%;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+/* Board Rows */
+.board-row {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  position: relative;
+}
+
+/* Individual Board Cells */
+.board-cell {
+  flex: 1;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  background: transparent;
+  opacity: 1;
+  min-width: 0;
+}
+
+/* Cell hover effects */
+.board-cell:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.board-cell:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  animation: cellPulse 2s infinite;
+}
+
+/* Cell number styling */
+.cell-number {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.7em;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Special cell styling */
+.board-cell[data-type="SNAKE"] .cell-number {
+  color: #ef4444;
+}
+
+.board-cell[data-type="LADDER"] .cell-number {
+  color: #22c55e;
+}
+
+.board-cell[data-number="100"] .cell-number,
+.board-cell[data-number="1"] .cell-number {
+  color: #fbbf24;
+  font-size: 0.8em;
+}
+
+/* Snake and ladder visual indicators */
+.snake-indicator,
+.ladder-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2em;
+  opacity: 0.8;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.snake-indicator {
+  color: #ef4444;
+}
+
+.ladder-indicator {
+  color: #22c55e;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* Destination highlight */
+.destination-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid #fbbf24;
+  border-radius: 6px;
+  animation: pulse 1.5s infinite;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Player pieces container */
+.piece-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Multiple pieces stacking */
+.piece-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Animation indicator */
+.animation-indicator {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: 600;
+  z-index: 1000;
+  animation: indicatorPulse 1s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+/* Piece animations */
+.piece-animating {
+  animation: pieceBounce 0.6s ease-in-out infinite;
+  z-index: 100;
+}
+
+.piece-landing {
+  animation: pieceLand 0.4s ease-out;
+}
+
+.piece-moving {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+}
+
+/* Snake and ladder animations */
+.snake-slide {
+  animation: snakeSlide 0.6s ease-in;
+}
+
+.ladder-climb {
+  animation: ladderClimb 0.6s ease-out;
+}
+
+.winning-position {
+  animation: winningGlow 2s ease-in-out infinite;
+}
+
+/* Path drawing for snakes and ladders */
+.snake-path,
+.ladder-path {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.snake-path {
+  stroke: #ef4444;
+  stroke-width: 3;
+  stroke-dasharray: 5, 5;
+  animation: snakeMove 2s linear infinite;
+}
+
+.ladder-path {
+  stroke: #22c55e;
+  stroke-width: 2;
+  stroke-dasharray: 3, 3;
+}
+
+/* Cell color variations for debugging */
+.cell-light {
+  /* background: rgba(255, 255, 255, 0.05); */
+}
+
+.cell-dark {
+  /* background: rgba(0, 0, 0, 0.05); */
+}
+
+/* Start and end cell special effects */
+.board-cell[data-number="1"] {
+  /* background: rgba(34, 197, 94, 0.1); */
+}
+
+.board-cell[data-number="100"] {
+  /* background: rgba(245, 158, 11, 0.1); */
+}
+
+.board-cell[data-number="1"]::after,
+.board-cell[data-number="100"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  border: 2px solid;
+  border-radius: 50%;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.board-cell[data-number="1"]::after {
+  border-color: #22c55e;
+  animation: startPulse 3s ease-in-out infinite;
+}
+
+.board-cell[data-number="100"]::after {
+  border-color: #f59e0b;
+  animation: endPulse 3s ease-in-out infinite;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes cellPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes indicatorPulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+@keyframes pieceBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.1);
+  }
+}
+
+@keyframes pieceLand {
+  0% {
+    transform: scale(1.1) translateY(-3px);
+  }
+  30% {
+    transform: scale(1.15) translateY(-1px);
+  }
+  60% {
+    transform: scale(0.95) translateY(1px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes snakeSlide {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(0.8) rotate(-8deg) translateY(3px);
+    filter: hue-rotate(20deg) brightness(1.2);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes ladderClimb {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(3deg) translateY(-5px);
+    filter: brightness(1.2) saturate(1.5);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes winningGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.4);
+  }
+}
+
+@keyframes snakeMove {
+  0% {
+    stroke-dashoffset: 10;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes startPulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes endPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .game-board-container {
+    width: 100%;
+    max-width: min(90vh, 90vw);
+  }
+  
+  .game-board {
+    border-radius: 10px;
+    padding: 2%;
+    border-width: 2px;
+  }
+  
+  .cell-number {
+    font-size: 0.65em;
+  }
+  
+  .animation-indicator {
+    font-size: 0.75em;
+    padding: 5px 10px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .game-board-container {
+    max-width: min(100vw, 100vh);
+    padding: 0;
+  }
+  
+  .game-board {
+    border-radius: 8px;
+    padding: 1.5%;
+    border-width: 2px;
+    box-shadow: 
+      0 10px 15px -3px rgba(0, 0, 0, 0.3),
+      0 4px 6px -2px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .cell-number {
+    font-size: 0.6em;
+    top: 1px;
+    left: 1px;
+  }
+  
+  .snake-indicator,
+  .ladder-indicator {
+    font-size: 1em;
+  }
+  
+  .animation-indicator {
+    top: -25px;
+    font-size: 0.7em;
+    padding: 4px 8px;
+  }
+  
+  .destination-highlight {
+    border-width: 1.5px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .game-board {
+    border-radius: 6px;
+    padding: 1%;
+    border-width: 1px;
+  }
+  
+  .cell-number {
+    font-size: 0.5em;
+  }
+  
+  .snake-indicator,
+  .ladder-indicator {
+    font-size: 0.8em;
+  }
+  
+  .piece-animating {
+    animation-duration: 0.4s;
+  }
+}
+
+/* Landscape orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .game-board-container {
+    max-width: min(80vh, 80vw);
+  }
+  
+  .game-board {
+    max-height: 85vh;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .game-board {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .game-board,
+  .board-cell,
+  .piece-animating,
+  .animation-indicator,
+  .destination-highlight {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .board-cell:hover {
+    transform: none;
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .game-board {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 20px 25px -5px rgba(0, 0, 0, 0.4),
+      0 10px 10px -5px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  
+  .cell-number {
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* Print styles */
+@media print {
+  .game-board {
+    box-shadow: none;
+    border: 2px solid #000;
+    background: white !important;
+  }
+  
+  .animation-indicator,
+  .destination-highlight {
+    display: none;
+  }
+}
+
+/* Utility classes */
+.board-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.board-disabled {
+  pointer-events: none;
+  opacity: 0.8;
+  filter: grayscale(0.3);
+}
+
+.board-winning {
+  animation: winningBoard 3s ease-in-out;
+}
+
+@keyframes winningBoard {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3) saturate(1.2);
+  }
+}
+
+/* Smooth transitions for board background changes */
+.game-board {
+  transition: background-image 0.5s ease-in-out;
+}
+
+/* Focus styles for accessibility */
+.board-cell:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.board-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2em;
+  z-index: 100;
+}
+
+
+/* ===== GHOST EFFECT ADDITIONS ===== */
+/* Add these to your existing GameBoard.css */
+
+/* Ghost trail effect */
+.piece-trail {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: fadeTrail 0.4s ease-out forwards;
+}
+
+@keyframes fadeTrail {
+  0% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 0.05;
+    transform: translate(-50%, -50%) scale(0.5);
+    filter: blur(3px);
+  }
+}
+
+/* Enhanced piece glowing during movement */
+.piece-glowing {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7)) 
+          drop-shadow(0 0 15px rgba(100, 150, 255, 0.5))
+          drop-shadow(0 0 25px rgba(100, 150, 255, 0.3));
+  animation: glowPulse 0.8s ease-in-out infinite;
+  z-index: 100;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7)) 
+            drop-shadow(0 0 15px rgba(100, 150, 255, 0.5))
+            drop-shadow(0 0 25px rgba(100, 150, 255, 0.3));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)) 
+            drop-shadow(0 0 20px rgba(100, 150, 255, 0.7))
+            drop-shadow(0 0 35px rgba(100, 150, 255, 0.4));
+    transform: scale(1.02);
+  }
+}
+
+/* Smooth animation for piece movement */
+.piece-animating {
+  animation: pieceBounce 0.6s ease-in-out infinite;
+  z-index: 100;
+  transition: all 0.08s ease-out;
+}
+
+/* Enhanced animation indicator with glass morphism */
+.animation-indicator {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  padding: 14px 28px;
+  border-radius: 50px;
+  background: rgba(100, 150, 255, 0.1);
+  border: 2px solid rgba(100, 150, 255, 0.3);
+  color: #64a0ff;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 8px 32px rgba(31, 38, 135, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: slideIn 0.3s ease-out;
+  white-space: nowrap;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Glowing dot indicator */
+.glow-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #64a0ff;
+  animation: dotPulse 1s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(100, 150, 255, 0.8);
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.4);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Piece smooth position transitions */
+.board-cell {
+  position: relative;
+}
+
+/* Override previous piece-animating for better ghost effect */
+.piece-animating {
+  transition: transform 0.1s ease-out;
+  z-index: 100;
+}
+
+/* Snake hit effect with enhanced visuals */
+.piece-snake-hit {
+  animation: snakeSlideGhost 0.6s ease-in;
+}
+
+@keyframes snakeSlideGhost {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    transform: scale(0.85) rotate(-12deg) translateY(4px);
+    filter: hue-rotate(20deg) brightness(1.3) drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: hue-rotate(0deg) brightness(1);
+  }
+}
+
+/* Ladder climb effect with enhanced visuals */
+.piece-ladder-climb {
+  animation: ladderClimbGhost 0.6s ease-out;
+}
+
+@keyframes ladderClimbGhost {
+  0% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    transform: scale(1.15) rotate(5deg) translateY(-6px);
+    filter: brightness(1.4) saturate(1.6) drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) saturate(1);
+  }
+}
+
+/* Smooth flow for ghost movement */
+@media (prefers-reduced-motion: no-preference) {
+  .piece-animating {
+    will-change: transform;
+  }
+  
+  .piece-trail {
+    will-change: opacity, transform, filter;
+  }
+}
+
+/* Dark mode enhancements for ghost effect */
+@media (prefers-color-scheme: dark) {
+  .animation-indicator {
+    background: rgba(50, 100, 255, 0.08);
+    border-color: rgba(100, 150, 255, 0.25);
+    color: #8bb4ff;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  
+  .piece-glowing {
+    filter: drop-shadow(0 0 8px rgba(100, 150, 255, 0.8)) 
+            drop-shadow(0 0 15px rgba(100, 150, 255, 0.6))
+            drop-shadow(0 0 25px rgba(100, 150, 255, 0.4));
+  }
+}
+
+/* Light mode enhancements for ghost effect */
+@media (prefers-color-scheme: light) {
+  .animation-indicator {
+    background: rgba(100, 150, 255, 0.12);
+    border-color: rgba(100, 150, 255, 0.4);
+    color: #4f7ef5;
+  }
+}
+
+/* Mobile responsive ghost effects */
+@media (max-width: 768px) {
+  .animation-indicator {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    font-size: 12px;
+    gap: 8px;
+  }
+  
+  .glow-dot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .piece-glowing {
+    filter: drop-shadow(0 0 6px rgba(100, 150, 255, 0.6)) 
+            drop-shadow(0 0 12px rgba(100, 150, 255, 0.4));
+  }
+}
+
+/* Small mobile optimization */
+@media (max-width: 480px) {
+  .animation-indicator {
+    bottom: 15px;
+    right: 15px;
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+  
+  .glow-dot {
+    width: 6px;
+    height: 6px;
+  }
+}
