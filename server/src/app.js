@@ -23,7 +23,7 @@ connectRedis();
 // Middleware
 app.use(morgan('short'));
 app.use(cors({
-  origin: process.env.CLIENT_PORT || 'http://172.20.10.3:5173',
+  origin: process.env.CLIENT_PORT || 'https://snake-and-ladder-online-multi.vercel.app',
   credentials: true  
 }));
 app.use(express.json());
@@ -53,7 +53,7 @@ const server = http.createServer(app);
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_PORT || 'http://172.20.10.3:5173',
+    origin: process.env.CLIENT_PORT || 'https://snake-and-ladder-online-multi.vercel.app',
     methods: ['GET', 'POST'],
     credentials: true
   }
