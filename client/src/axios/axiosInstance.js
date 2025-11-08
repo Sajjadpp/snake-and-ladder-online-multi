@@ -3,7 +3,7 @@ import axios from 'axios';
 import { requestInterceptor, responseInterceptor } from './interceptors';
 
 // Environment-based base URL
-export const baseUrl = 'http://172.20.10.3:3000';
+export const baseUrl = 'https://snake-and-ladder-online-multi.onrender.com';
 export const baseApiUrl = `${baseUrl}/api`;
 
 // Create axios instance with default configuration
