@@ -7,7 +7,7 @@ import Button from '../../ui/button';
 
 const Header = () => {
   const { user } = useAuth();
-  const { goBack } = useNavigation();
+  const { goBack, navigateTo } = useNavigation();
 
   return (
     <motion.header 
@@ -31,7 +31,7 @@ const Header = () => {
         size="small"
         onClick={() => console.log('Settings clicked')}
       >
-        <Settings className="w-5 h-5" />
+        <Settings className="w-5 h-5" onClick={()=> navigateTo('/settings')}/>
       </Button>
     </motion.header>
   );
@@ -40,10 +40,10 @@ const Header = () => {
 const UserInfo = ({ user }) => (
   <div className="flex items-center space-x-3">
     <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-      <User className="w-5 h-5 text-white" />
+      {user.avatar}
     </div>
     <div>
-      <h2 className="text-sm font-medium text-white">{user?.name}</h2>
+      <h2 className="text-sm font-medium text-white">{user?.username}</h2>
       <div className="flex items-center space-x-1">
         <Coins className="w-4 h-4 text-orange-400" />
         <span className="text-xs font-medium text-orange-400">

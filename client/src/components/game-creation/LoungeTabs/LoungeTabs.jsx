@@ -5,7 +5,7 @@ const LoungeTabs = ({ activeTab, onTabChange }) => {
   const tabs = [
     { id: 'all', label: 'All Lounges' },
     { id: '1v1', label: '1 vs 1' },
-    { id: '2v2', label: '2 vs 2' }
+    { id: '1v3', label: '1 vs 3' }
   ];
 
   return (

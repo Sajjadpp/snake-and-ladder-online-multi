@@ -265,6 +265,7 @@ const FriendsPage = () => {
         onAddFriend={handleAddFriend}
         onViewProfile={handleViewProfile}
         isLoading={isLoading}
+        currentFriends={friends}
       />
 
       <ProfileModal

@@ -88,6 +88,7 @@ const PlayerWaitingPage = () => {
           onInvite={handleinviteFriend}
           user={user._id}
           roomId={roomData.id}
+          currentPlayers={roomData.players}
         />
         <GameRules />
       </motion.main>

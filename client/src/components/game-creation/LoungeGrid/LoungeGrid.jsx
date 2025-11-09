@@ -11,7 +11,8 @@ const LoungeGrid = ({ lounges, activeTab, onLoungeSelect, loading }) => {
     
     return lounges.filter(lounge => {
       const playerCount = activeTab === '1v1' ? 2 : 4;
-      return lounge.allowedPlayers === playerCount;
+      console.log(playerCount, 'player count', lounge)
+      return lounge.players == playerCount;
     });
   };
 

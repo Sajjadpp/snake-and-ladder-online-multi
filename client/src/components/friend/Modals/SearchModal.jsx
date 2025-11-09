@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Coins, Eye, Search, UserPlus, X, Shield, Crown } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useToast } from "../../../contexts";
 
 // SearchModal Component
@@ -12,10 +12,20 @@ export const SearchModal = ({
   searchResults, 
   onAddFriend, 
   onViewProfile,
-  isLoading = false 
+  isLoading = false,
+  currentFriends = []
 }) => {
 
-  const toast = useToast()
+  const toast = useToast();
+
+  // Filter out users who are already friends
+  const filteredResults = useMemo(() => {
+    if (!searchResults || searchResults.length === 0) return [];
+    
+    return searchResults.filter(result => 
+      !currentFriends.some(friend => friend._id.toString() === result._id.toString())
+    );
+  }, [searchResults, currentFriends]);
 
   const getStatusConfig = (status) => {
     switch (status) {
@@ -72,9 +82,8 @@ export const SearchModal = ({
   const handleAddFriendClick = (e, userId) => {
     e.stopPropagation();
     onAddFriend(userId);
-    console.log(onClose)
     onClose();  
-    toast.success('Friend request send')
+    toast.success('Friend request sent');
   };
 
   return (
@@ -161,13 +170,12 @@ export const SearchModal = ({
                       <p className="text-gray-400 text-sm">Searching players...</p>
                     </div>
                   </div>
-                ) : searchResults.length > 0 ? (
-                  // Results list
+                ) : filteredResults.length > 0 ? (
+                  // Results list (only non-friends)
                   <div className="p-4 space-y-3">
-                    {searchResults.map((result, index) => {
+                    {filteredResults.map((result, index) => {
                       const statusConfig = getStatusConfig(result.status);
-                      const isFriend = result.isFriend;
-                      console.log(result, 'friend data');
+                      
                       return (
                         <motion.div
                           key={result._id}
@@ -216,24 +224,34 @@ export const SearchModal = ({
                               <Eye className="w-4 h-4" />
                               View Profile
                             </button>
-                            {!isFriend && (
-                              <button
-                                onClick={(e) => handleAddFriendClick(e, result._id)}
-                                className="flex-1 bg-orange-500 hover:bg-orange-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 active:scale-95 touch-manipulation shadow-lg shadow-orange-500/25 border border-orange-400/50"
-                              >
-                                <UserPlus className="w-4 h-4" />
-                                Add Friend
-                              </button>
-                            )}
-                            {isFriend && (
-                              <div className="flex-1 px-3 py-2 rounded-lg text-sm font-medium text-center text-green-400 bg-green-500/10 border border-green-500/20">
-                                Friends
-                              </div>
-                            )}
+                            <button
+                              onClick={(e) => handleAddFriendClick(e, result._id)}
+                              className="flex-1 bg-orange-500 hover:bg-orange-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2 active:scale-95 touch-manipulation shadow-lg shadow-orange-500/25 border border-orange-400/50"
+                            >
+                              <UserPlus className="w-4 h-4" />
+                              Add Friend
+                            </button>
                           </div>
                         </motion.div>
                       );
                     })}
+                  </div>
+                ) : searchQuery && searchResults.length > 0 ? (
+                  // All results are already friends
+                  <div className="text-center py-12 px-6">
+                    <div className="w-20 h-20 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-600/50">
+                      <UserPlus className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-white font-semibold text-lg mb-2">Already Friends</h3>
+                    <p className="text-gray-400 text-sm mb-6">
+                      All players matching "{searchQuery}" are already in your friends list.
+                    </p>
+                    <button
+                      onClick={() => onSearchChange('')}
+                      className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-xl text-white font-medium transition-all duration-200 active:scale-95 touch-manipulation shadow-lg shadow-orange-500/25"
+                    >
+                      Clear Search
+                    </button>
                   </div>
                 ) : searchQuery ? (
                   // No results state
@@ -270,12 +288,14 @@ export const SearchModal = ({
               </div>
 
               {/* Footer with search tips */}
-              {(searchResults.length > 0 || searchQuery) && !isLoading && (
+              {(filteredResults.length > 0 || searchQuery) && !isLoading && (
                 <div className="px-5 py-3 border-t border-slate-700/50 bg-slate-900/30">
                   <p className="text-gray-500 text-xs text-center">
-                    {searchResults.length > 0 
-                      ? `${searchResults.length} player${searchResults.length > 1 ? 's' : ''} found` 
-                      : 'Tip: Use exact username for better results'
+                    {filteredResults.length > 0 
+                      ? `${filteredResults.length} player${filteredResults.length > 1 ? 's' : ''} found` 
+                      : searchResults.length > 0 
+                        ? 'All results are already your friends'
+                        : 'Tip: Use exact username for better results'
                     }
                   </p>
                 </div>

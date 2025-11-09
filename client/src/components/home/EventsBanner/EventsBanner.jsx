@@ -11,7 +11,8 @@ const EventsBanner = () => {
       title: "Weekend Tournament!",
       subtitle: "Win up to ₹10,000",
       icon: Trophy,
-      bgColor: "bg-gradient-to-r from-yellow-400 to-orange-500"
+      bgColor: "bg-gradient-to-r from-yellow-400 to-orange-500",
+    
     },
     {
       id: 2,

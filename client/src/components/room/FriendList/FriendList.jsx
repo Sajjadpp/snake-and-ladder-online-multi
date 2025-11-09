@@ -12,7 +12,8 @@ const FriendInviteSidebar = ({
   onClose = () => {}, 
   onInvite = (friendId) => console.log('Inviting:', friendId),
   user = null,
-  roomId = null
+  roomId = null,
+  currentPlayers = []
 }) => {
     const [invitedIds, setInvitedIds] = useState(new Set());
     const [friends, setFriends] = useState([])
@@ -30,7 +31,7 @@ const FriendInviteSidebar = ({
             });
         }, 2000);
     };
-
+    console.log(currentPlayers,'currentPlayers')
     useEffect(() => {
         if(!user && !isOpen) return;
         getAllFriends()
@@ -99,65 +100,68 @@ const FriendInviteSidebar = ({
                     <p className="text-sm">No online friends to invite</p>
                     </div>
                 ) : (
-                    onlineFriends.map((friend, index) => (
-                    <motion.div
-                        key={friend._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="flex items-center gap-3 p-3 bg-gray-750 hover:bg-gray-700 rounded-xl transition-colors group"
-                    >
-                        {/* Avatar with Status */}
-                        <div className="relative flex-shrink-0">
-                        
-                        <div className='w-12 h-12 rounded-full ring-2 ring-gray-600 grid place-items-center'>{friend.avatar}</div>
-                        <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 ${getStatusColor(friend.status)} rounded-full ring-2 ring-gray-800`} />
-                        </div>
-
-                        {/* User Info */}
-                        <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium truncate">{friend.username}</p>
-                        <p className="text-xs text-gray-400 capitalize">{friend.status.replace('-', ' ')}</p>
-                        </div>
-
-                        {/* Invite Button */}
-                        <motion.button
-                        onClick={() => handleInvite(friend._id)}
-                        disabled={invitedIds.has(friend._id)}
-                        whileTap={{ scale: 0.9 }}
-                        className={`flex-shrink-0 p-2 rounded-lg transition-all ${
-                            invitedIds.has(friend._id)
-                            ? 'bg-green-500 text-white'
-                            : 'bg-orange-500 hover:bg-orange-600 text-white'
-                        }`}
+                    onlineFriends.filter(friend => 
+                        !currentPlayers.some(p => p.user._id.toString() === friend._id.toString())
+                        ).map((friend, index) => (
+                        <motion.div
+                            key={friend._id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="flex items-center gap-3 p-3 bg-gray-750 hover:bg-gray-700 rounded-xl transition-colors group"
                         >
-                        <AnimatePresence mode="wait">
-                            {invitedIds.has(friend._id) ? (
-                            <motion.svg
-                                key="check"
-                                initial={{ scale: 0, rotate: -180 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                exit={{ scale: 0 }}
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                            {/* Avatar with Status */}
+                            <div className="relative flex-shrink-0">
+                            <div className='w-12 h-12 rounded-full ring-2 ring-gray-600 grid place-items-center'>
+                                {friend.avatar}
+                            </div>
+                            <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 ${getStatusColor(friend.status)} rounded-full ring-2 ring-gray-800`} />
+                            </div>
+
+                            {/* User Info */}
+                            <div className="flex-1 min-w-0">
+                            <p className="text-white font-medium truncate">{friend.username}</p>
+                            <p className="text-xs text-gray-400 capitalize">{friend.status.replace('-', ' ')}</p>
+                            </div>
+
+                            {/* Invite Button */}
+                            <motion.button
+                            onClick={() => handleInvite(friend._id)}
+                            disabled={invitedIds.has(friend._id)}
+                            whileTap={{ scale: 0.9 }}
+                            className={`flex-shrink-0 p-2 rounded-lg transition-all ${
+                                invitedIds.has(friend._id)
+                                ? 'bg-green-500 text-white'
+                                : 'bg-orange-500 hover:bg-orange-600 text-white'
+                            }`}
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </motion.svg>
-                            ) : (
-                            <motion.div
-                                key="plus"
-                                initial={{ scale: 0, rotate: -180 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                exit={{ scale: 0 }}
-                            >
-                                <Plus className="w-5 h-5" />
-                            </motion.div>
-                            )}
-                        </AnimatePresence>
-                        </motion.button>
-                    </motion.div>
+                            <AnimatePresence mode="wait">
+                                {invitedIds.has(friend._id) ? (
+                                <motion.svg
+                                    key="check"
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    exit={{ scale: 0 }}
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </motion.svg>
+                                ) : (
+                                <motion.div
+                                    key="plus"
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    exit={{ scale: 0 }}
+                                >
+                                    <Plus className="w-5 h-5" />
+                                </motion.div>
+                                )}
+                            </AnimatePresence>
+                            </motion.button>
+                        </motion.div>
                     ))
                 )}
                 </div>

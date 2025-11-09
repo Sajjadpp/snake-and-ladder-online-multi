@@ -175,6 +175,9 @@ class RoomService {
                 await roomRepository.delete(roomId);
                 return false; 
             }
+            else {
+                await roomRepository.changeOwnerShip(roomId, updatedRoom.players[0].user)
+            }
             return true; 
         }
         return true; 

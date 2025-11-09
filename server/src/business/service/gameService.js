@@ -62,7 +62,7 @@ class GameService {
         let board = boardService.getBoardById(gameData.board);
         let arrangedPlayers = this.arrangePlayersForUser(gameData.players, playerId);
         await redisGameService.cacheGameFromDB({...gameData, players: arrangedPlayers}); // added code for redis
-        await memoryCache.set(gameId.toString(), {...gameData, players: arrangedPlayers}); // added code for memory cache
+        memoryCache.set(gameId.toString(), {...gameData, players: arrangedPlayers}); // added code for memory cache
         return {...gameData, board, players: arrangedPlayers};
     }
 
@@ -283,7 +283,7 @@ class GameService {
 
     async awardPrize(winnerId, entryFee, playerCount) {
         const totalPrize = entryFee * playerCount;
-        console.log(totalPrize, "total price")
+        console.log(totalPrize, "total price", entryFee, playerCount)
         await playerRepository.awardCoins(winnerId, totalPrize);
         return totalPrize;
     }
@@ -347,10 +347,11 @@ class GameService {
         }
 
         return {
-            entryFee: gameResult.entryFee,
+            entryFee: gameResult.room.entryFee,
             roomId: gameResult.room.roomId,
             players: gameResult.players,
-            prize: gameResult.entryFee * gameResult.players.length
+            prize: gameResult.room.entryFee * gameResult.players.length,
+            winner: gameResult.players.find(p => p.user._id.toString() === gameResult.winner.toString())
         }
     }
 

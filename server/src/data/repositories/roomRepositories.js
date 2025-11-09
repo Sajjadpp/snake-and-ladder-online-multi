@@ -357,6 +357,18 @@ class RoomRepository {
             }
         );
     }
+
+    async changeOwnerShip(roomId, userId) {
+        return await GameRoom.findOneAndUpdate(
+            {
+                roomId: roomId,
+                'players.user': userId
+            },
+            {
+                $set: {owner: userId}
+            }
+        )
+    }
 }
 
 

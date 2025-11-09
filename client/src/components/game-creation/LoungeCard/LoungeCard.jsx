@@ -66,7 +66,8 @@ const LoungeCard = ({ lounge, index, onSelect }) => {
         <div className="flex justify-between items-center">
           <div className="bg-white px-2 py-1 rounded-md">
             <span className="text-xs font-medium text-gray-700">
-              {lounge.allowedPlayers === 2 ? '1v1' : '2v2'}
+              {console.log(lounge,'anadjdjn')}
+              {lounge.players === 2 ? '1v1' : '1v3'}
             </span>
           </div>
 

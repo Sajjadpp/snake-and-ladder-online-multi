@@ -58,7 +58,6 @@ const PlayPage = () => {
         <GameHeader 
           onSettingClicked={()=> setIsSettingOpen(prev => !prev)}
         />
-        {console.log(isSettingOpen)}
         <SettingModal 
           isOpen={isSettingOpen}
           onExit={()=> handleLeaveGame(user._id, "left")}

@@ -92,7 +92,7 @@ module.exports = (io, socket) => {
                 deletedUser: userId,
                 roomId: roomId,
                 isRoomExist: shouldFetchRoom
-            })
+            });
             let room = await roomService.getRoomDetails(roomId);
             socket.to(roomId).emit('room-updates', room);
             

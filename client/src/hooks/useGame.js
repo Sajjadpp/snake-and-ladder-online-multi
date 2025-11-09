@@ -176,6 +176,13 @@ export const useGame = () => {
     }
   }, [stopTimer, isGameActive, startTimer, user, gameId]);
 
+  // Auto-roll dice when timer reaches 0 (only for current turn player)
+  useEffect(() => {
+    if (timer === 0 && derivedState.isMyTurn && isGameActive) {
+      handleRollDice();
+    }
+  }, [timer, derivedState.isMyTurn, isGameActive, handleRollDice]);
+
   // Setup socket listeners
   useEffect(() => {
     if (!socket || !gameId || !user || listenersRegisteredRef.current) {

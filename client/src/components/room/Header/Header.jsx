@@ -3,15 +3,18 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, User, Coins, Settings, Clock, Wifi, WifiOff } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext';
 import Button from '../../ui/button';
+import { useNavigation } from '../../../hooks/useNavigation';
 
 const Header = ({ onExit, timeWaiting, isConnected }) => {
   const { user } = useAuth();
+  const {navigateTo} = useNavigation();
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
+
 
   return (
     <motion.header 
@@ -40,8 +43,9 @@ const Header = ({ onExit, timeWaiting, isConnected }) => {
         <Button
           variant="secondary"
           size="small"
+          onClick={()=> navigateTo('/settings')}
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-5 h-5"/>
         </Button>
       </div>
     </motion.header>
@@ -51,10 +55,10 @@ const Header = ({ onExit, timeWaiting, isConnected }) => {
 const UserInfo = ({ user }) => (
   <div className="hidden sm:flex items-center space-x-3">
     <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-      <User className="w-5 h-5 text-white" />
+      {user.avatar}
     </div>
     <div>
-      <h2 className="text-sm font-medium text-white">{user?.name || 'Player'}</h2>
+      <h2 className="text-sm font-medium text-white">{user?.username || 'Player'}</h2>
       <div className="flex items-center space-x-1">
         <Coins className="w-4 h-4 text-orange-400" />
         <span className="text-xs font-medium text-orange-400">

@@ -276,7 +276,7 @@ class GameRepository {
 
         return await Game.findOne({_id:gameId, status: "finished"})
             .populate('room', "entryFee roomId")
-            .populate('players.user', 'username _id coins')
+            .populate('players.user', 'username _id id coins avatar')
             .lean()
         
     }
