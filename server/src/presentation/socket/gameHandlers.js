@@ -19,33 +19,6 @@ module.exports = (io, socket) => {
         }
     });
 
-    // socket.on('request_dice_roll', async ({ gameId, playerId }) => {
-    //     try {
-    //         // Call business service for dice roll logic
-    //         const diceResult = await gameService.handleDiceRoll(gameId, playerId);
-    //         console.log(io.sockets.adapter.rooms);
-    //         // Socket-specific emission
-    //         io.in(gameId).emit('dice_rolled', {
-    //             diceValue: diceResult.diceValue,
-    //             newPosition: diceResult.newPosition,
-    //             playerId: diceResult.playerId,
-    //             nextTurn: diceResult.nextTurn
-    //         });
-            
-    //     } catch (error) {
-    //         console.error('Dice roll error:', error);
-            
-    //         // Map business errors to socket events
-    //         if (error.message === 'GAME_NOT_FOUND') {
-    //             socket.emit('error', { message: 'Game not available' });
-    //         } else if (error.message === 'NOT_YOUR_TURN') {
-    //             socket.emit('error', { message: 'Not your turn' });
-    //         } else {
-    //             socket.emit('error', { message: 'Error occurred in the server' });
-    //         }
-    //     }
-    // });
-
     socket.on('request_dice_roll', async ({ gameId, playerId }) => {
         try {
             // STEP 1: Handle dice roll with Redis
@@ -124,11 +97,26 @@ module.exports = (io, socket) => {
         try {
             console.log('Player exiting game:', playerId, gameId);
 
-            await gameService.handlePlayerLeaveGame(gameId, playerId)
-            
-            socket.leave(gameId);
+            let playersLength = await gameService.handlePlayerLeaveGame(gameId, playerId)
+            console.log(playersLength, 'players length')
+            if(playersLength < 2) {
+                const gameResult = await gameService.handleGameEnd(gameId);
+                if(gameResult.gameStatus !== 'finished') {
+                    throw new Error('GAME_IN_PROGRESS');
+                }
+                console.log('Game ended:', gameResult);
+                // Socket-specific emission
+                io.in(gameId).emit('game_over', {
+                    gameStatus: gameResult.gameStatus,
+                    winner: gameResult.winner,
+                    prize: gameResult.prize
+                });
+            }
+            else {
+                socket.leave(gameId);
+                io.in(gameId).emit('player_left_game', { playerId , status: "left"});
+            }
             // Broadcast info to others so client UIs can update
-            io.in(gameId).emit('player_left_game', { playerId , status: "left"});
         } catch (error) {
             console.error('Exit game error:', error);
         }

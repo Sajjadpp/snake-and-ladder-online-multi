@@ -1,17 +1,18 @@
 // pages/FriendsPage.js
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Users, Filter, UserPlus, RefreshCw } from 'lucide-react';
+import { Search, Users, Filter, UserPlus, RefreshCw, ArrowLeft } from 'lucide-react';
 import PlayerCard from '../components/friend/PlayerCard';
 import { ProfileModal, SearchModal } from '../components/friend/Modals';
 import { useFriends } from '../hooks/useFriend';
+import { useNavigation } from '../hooks/useNavigation';
 
 const FriendsPage = () => {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [mounted, setMounted] = useState(false);
-
+  const {navigateTo} = useNavigation()
   const {
     friends,
     filteredFriends,
@@ -107,6 +108,9 @@ const FriendsPage = () => {
         <div className="max-w-7xl mx-auto relative">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center cursor-pointer justify-center" onClick={()=> navigateTo('/home')}>
+                <ArrowLeft className="w-4 h-4 text-white" />
+              </div>
               <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
                 <Users className="w-6 h-6 text-white" />
               </div>

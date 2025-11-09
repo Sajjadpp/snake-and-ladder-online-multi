@@ -15,6 +15,12 @@ class RoomRepository {
             .populate('owner')
             .populate('loungeId');
     }
+    async findByMongoId(_id) {
+        return await GameRoom.findOne({_id})
+            .populate('players.user', 'username mobile avatar coins')
+            .populate('owner')
+            .populate('loungeId');
+    }
 
     async create(roomData) {
         const room = new GameRoom(roomData);
@@ -335,6 +341,21 @@ class RoomRepository {
     async findByCustomRoomId(roomId) {
         console.log(roomId)
         return await GameRoom.findOne(roomId);
+    }
+
+    async updatePlayerStatusWithGameId(gameId, userId, status){
+        return await GameRoom.findOneAndUpdate(
+            { 
+                gameId: gameId,
+                'players.user': userId 
+            },
+            { 
+                $set: { 'players.$.status': status } 
+            },
+            { 
+                new: true 
+            }
+        );
     }
 }
 

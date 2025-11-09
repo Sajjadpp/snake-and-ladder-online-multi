@@ -28,19 +28,24 @@ const GameInvitationHandler = () => {
         console.log('New game invitation found:', newGameInvitation);
         
         const invitationData = {
-            id: newGameInvitation._id,
-            type: 'game_invite',
-            senderId: newGameInvitation.senderId,
-            senderUsername: newGameInvitation.data?.senderUsername || 'Unknown Player',
-            senderAvatar: newGameInvitation.data?.senderAvatar || '👤',
-            gameType: newGameInvitation.data?.gameType || 'Game',
-            gameId: newGameInvitation.data?.gameId,
-            expiresAt: newGameInvitation.data?.expiresAt,
+            id: newGameInvitation._id || newGameInvitation.id,
+            title: newGameInvitation.title || 'Game Invitation',
+            icon: newGameInvitation.icon || 'Trophy',
+            color: newGameInvitation.color || 'text-orange-500',
+            type: newGameInvitation.type || 'game_invite',
             message: newGameInvitation.message,
-            createdAt: newGameInvitation.createdAt,
+            time: newGameInvitation.time || '',
+            createdAt: newGameInvitation.createdAt || newGameInvitation.data?.sentAt,
+            expiresAt: newGameInvitation.data?.expiresAt,
+            gameId: newGameInvitation.data?.gameId,
+            gameType: newGameInvitation.data?.gameType || 'Game',
+            senderId: newGameInvitation.sender?.id || newGameInvitation.senderId,
+            senderUsername: newGameInvitation.sender?.username || newGameInvitation.data?.senderUsername || 'Unknown Player',
+            senderAvatar: newGameInvitation.sender?.avatar || newGameInvitation.data?.senderAvatar || '👤',
+            userId: newGameInvitation.userId, // receiver ID (optional)
         };
 
-        processedInvitationsRef.current.add(newGameInvitation._id);
+        processedInvitationsRef.current.add(newGameInvitation._id || newGameInvitation.id);
         setActiveInvitation(invitationData);
         }
     }, [notifications]);
@@ -63,9 +68,9 @@ const GameInvitationHandler = () => {
         try {
             console.log('Accepting game invitation:', activeInvitation);
             await handleAcceptGameInvitation(
-            activeInvitation.senderId,
-            activeInvitation.gameId,
-            activeInvitation.id
+                activeInvitation.senderId,
+                activeInvitation.gameId,
+                activeInvitation.id
             );
             await markAsRead(activeInvitation.id);
             console.log('Accepted game invitation from:', activeInvitation.senderUsername);
@@ -78,13 +83,14 @@ const GameInvitationHandler = () => {
 
     const handleDecline = async () => {
         if (activeInvitation) {
-        try {
-            await markAsRead(activeInvitation.id);
-            console.log('Declined game invitation from:', activeInvitation.senderUsername);
-        } catch (error) {
-            console.error('Error declining game invitation:', error);
-        }
-        setActiveInvitation(null);
+            try {
+                console.log(activeInvitation,'active invitation')
+                await markAsRead(activeInvitation.id);
+                console.log('Declined game invitation from:', activeInvitation.senderUsername);
+            } catch (error) {
+                console.error('Error declining game invitation:', error);
+            }
+            setActiveInvitation(null);
         }
     };
 
@@ -103,11 +109,11 @@ const GameInvitationHandler = () => {
 
     return (
         <GameInvitationPopup
-        invitation={activeInvitation}
-        isOpen={!!activeInvitation}
-        onClose={handleClose}
-        onAccept={handleAccept}
-        onDecline={handleDecline}
+            invitation={activeInvitation}
+            isOpen={!!activeInvitation}
+            onClose={handleClose}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
         />
     );
 };

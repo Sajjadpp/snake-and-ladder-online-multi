@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Coins, User, Bell } from 'lucide-react';
+import { Settings, Coins, User, Bell, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useNavigation } from '../../../hooks/useNavigation';
 import Button from '../../ui/button';
@@ -9,7 +9,8 @@ import NotificationBell from '../../ui/Bell';
 
 const Header = ({isNotification, setIsNotification}) => {
   const { user } = useAuth();
-  const { navigateTo } = useNavigation();
+  const { navigateTo, goBack } = useNavigation();
+
   return (
     <motion.header 
       className="flex justify-between items-center p-4 bg-white/10 backdrop-blur-md border-b border-white/20"
@@ -17,7 +18,16 @@ const Header = ({isNotification, setIsNotification}) => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <UserInfo user={user} />
+      <div className='flex gap-2'>
+        <Button
+          variant="secondary"
+          size="small"
+          onClick={()=> navigateTo('/')}
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        <UserInfo user={user} />
+      </div>
       <div className='flex gap-5'>
         <NotificationBell isNotification={isNotification} setIsNotification={setIsNotification}/>
         <Button

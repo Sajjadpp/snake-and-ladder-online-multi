@@ -206,6 +206,7 @@ class RoomService {
     }
 
     async isUserInRoom(roomId, userId) {
+        console.log(roomId, 'roomId')
         const room = await roomRepository.findByRoomId(roomId);
         if (!room) {
             throw new Error('ROOM_NOT_FOUND');
@@ -218,6 +219,7 @@ class RoomService {
     }
 
     async isRoomOwner(roomId, userId) {
+        console.log(roomId, 'roomId')
         const room = await roomRepository.findByRoomId(roomId);
         if (!room) {
             throw new Error('ROOM_NOT_FOUND');
@@ -278,15 +280,8 @@ class RoomService {
     }
 
     async updatePlayerStatusWithGameId(gameId, playerId, status) {
-        return await Game.updateOne(
-            { 
-                gameId: gameId, 
-                'players.user': playerId 
-            },
-            { 
-                $set: { 'players.$.status': status } 
-            }
-        );
+        
+        return await roomRepository.updatePlayerStatusWithGameId(gameId, playerId, status)
     }
 
     async invitePlayer(friendId, userId, roomId) {

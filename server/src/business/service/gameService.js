@@ -66,219 +66,6 @@ class GameService {
         return {...gameData, board, players: arrangedPlayers};
     }
 
-    // // OPTIMIZED: Completely rewritten for speed
-    // async handleDiceRoll(gameId, playerId) {
-    //     console.log('\n╔════════════════════════════════════╗');
-    //     console.log('║      DICE ROLL OPTIMIZATION        ║');
-    //     console.log('╚════════════════════════════════════╝\n');
-        
-    //     const totalStart = Date.now();
-
-    //     // STEP 1: Fetch optimized game state
-    //     const t1 = Date.now();
-    //     const game = await gameRepository.getGameStateForDiceRoll(gameId);
-    //     const step1 = Date.now() - t1;
-        
-    //     if (!game) throw new Error('GAME_NOT_FOUND');
-    //     this.validateGameState(game, playerId);
-
-    //     // STEP 2: Generate dice (instant)
-    //     const t2 = Date.now();
-    //     const diceValue = this.generateDiceValue();
-    //     const step2 = Date.now() - t2;
-
-    //     // STEP 3: Find player (instant)
-    //     const t3 = Date.now();
-    //     console.log(game.players[0], 'players in game',playerId);
-    //     const player = game.players.find(p => p.user.toString() === playerId);
-    //     const step3 = Date.now() - t3;
-
-    //     // STEP 4: Calculate position (optimized - no board rebuild)
-    //     const t4 = Date.now();
-    //     const newPosition = boardService.calculateNewPositionFast(
-    //         game.board,
-    //         player.position,
-    //         diceValue
-    //     );
-    //     const step4 = Date.now() - t4;
-
-    //     // STEP 5: Determine next turn
-    //     const t5 = Date.now();
-    //     let nextPlayerId = player.user;
-    //     if (diceValue !== 6 && newPosition !== 100) {
-    //         const currentIndex = game.players.findIndex(
-    //             p => p.user.toString() === playerId
-    //         );
-    //         const nextIndex = (currentIndex + 1) % game.players.length;
-    //         nextPlayerId = game.players[nextIndex].user;
-    //     }
-    //     const step5 = Date.now() - t5;
-
-    //     // STEP 6: Single combined database update
-    //     const t6 = Date.now();
-    //     await gameRepository.updateGameStateAfterDiceRoll(
-    //         gameId,
-    //         playerId,
-    //         newPosition,
-    //         nextPlayerId
-    //     );
-    //     const step6 = Date.now() - t6;
-
-    //     const totalMs = Date.now() - totalStart;
-
-    //     // Performance logging
-    //     console.log('PERFORMANCE BREAKDOWN:');
-    //     console.log(`  1. Fetch Game:           ${step1}ms`);
-    //     console.log(`  2. Generate Dice:        ${step2}ms`);
-    //     console.log(`  3. Find Player:          ${step3}ms`);
-    //     console.log(`  4. Calculate Position:   ${step4}ms ← Optimized!`);
-    //     console.log(`  5. Determine Turn:       ${step5}ms`);
-    //     console.log(`  6. Update Database:      ${step6}ms ← Combined!`);
-    //     console.log('─'.repeat(40));
-    //     console.log(`  TOTAL:                   ${totalMs}ms`);
-        
-    //     if (totalMs > 100) {
-    //         console.log(`  ⚠️  Still slow (target <100ms)`);
-    //     } else if (totalMs > 50) {
-    //         console.log(`  ✅ Good (target <100ms)`);
-    //     } else {
-    //         console.log(`  🚀 Excellent! (target <100ms)`);
-    //     }
-    //     console.log('╚════════════════════════════════════╝\n');
-
-    //     // Get next player info
-    //     const nextPlayer = game.players.find(
-    //         p => p.user.toString() === nextPlayerId.toString()
-    //     );
-    //     console.log(nextPlayerId, 'next player id');
-    //     return {
-    //         diceValue,
-    //         newPosition,
-    //         playerId,
-    //         nextTurn: {
-    //             userId: nextPlayerId,
-    //             username: nextPlayer.user.username,
-    //             order: nextPlayer.order
-    //         },
-    //         boardId: game.board,
-    //         serverMs: totalMs
-    //     };
-    // }
-
-    // redis code
-    // async handleDiceRoll(gameId, playerId) {
-    //     console.log('\n╔════════════════════════════════════╗');
-    //     console.log('║   REDIS-OPTIMIZED DICE ROLL        ║');
-    //     console.log('╚════════════════════════════════════╝\n');
-        
-    //     const totalStart = Date.now();
-
-    //     // STEP 1: Try Redis first, fallback to MongoDB
-    //     const t1 = Date.now();
-    //     let game = await redisGameService.getGameState(gameId);
-    //     let fromCache = true;
-
-    //     if (!game) {
-    //         console.log('  ⚠️  Cache miss - fetching from MongoDB...');
-    //         game = await gameRepository.getGameStateForDiceRoll(gameId);
-    //         if (game) {
-    //             // Cache it for next time
-    //             await redisGameService.cacheGameFromDB(game);
-    //         }
-    //         fromCache = false;
-    //     } else {
-    //         console.log('  ✅ Cache hit - using Redis!', game);
-    //     }
-    //     const step1 = Date.now() - t1;
-        
-    //     if (!game) throw new Error('GAME_NOT_FOUND');
-    //     this.validateGameState(game, playerId);
-
-    //     // STEP 2: Generate dice
-    //     const t2 = Date.now();
-    //     const diceValue = this.generateDiceValue();
-    //     const step2 = Date.now() - t2;
-
-    //     // STEP 3: Find player
-    //     const t3 = Date.now();
-    //     const player = game.players.find(
-    //         p => (p.user._id || p.user).toString() === playerId
-    //     );
-    //     const step3 = Date.now() - t3;
-
-    //     // STEP 4: Calculate new position
-    //     const t4 = Date.now();
-    //     const newPosition = boardService.calculateNewPositionFast(
-    //         game.board,
-    //         player.position,
-    //         diceValue
-    //     );
-    //     const step4 = Date.now() - t4;
-
-    //     // STEP 5: Determine next turn
-    //     const t5 = Date.now();
-    //     let nextPlayerId = player.user._id || player.user;
-    //     if (diceValue !== 6 && newPosition !== 100) {
-    //         const currentIndex = game.players.findIndex(
-    //             p => (p.user._id || p.user).toString() === playerId
-    //         );
-    //         const nextIndex = (currentIndex + 1) % game.players.length;
-    //         nextPlayerId = game.players[nextIndex].user._id || game.players[nextIndex].user;
-    //     }
-    //     const step5 = Date.now() - t5;
-
-    //     // STEP 6: Update Redis ONLY (super fast!)
-    //     const t6 = Date.now();
-    //     await redisGameService.updatePlayerPosition(
-    //         gameId,
-    //         playerId,
-    //         newPosition,
-    //         nextPlayerId
-    //     );
-    //     const step6 = Date.now() - t6;
-
-    //     const totalMs = Date.now() - totalStart;
-
-    //     // Performance logging
-    //     console.log('PERFORMANCE BREAKDOWN:');
-    //     console.log(`  1. Fetch Game (${fromCache ? 'Redis' : 'MongoDB'}): ${step1}ms`);
-    //     console.log(`  2. Generate Dice:        ${step2}ms`);
-    //     console.log(`  3. Find Player:          ${step3}ms`);
-    //     console.log(`  4. Calculate Position:   ${step4}ms`);
-    //     console.log(`  5. Determine Turn:       ${step5}ms`);
-    //     console.log(`  6. Update Redis:         ${step6}ms 🚀`);
-    //     console.log('─'.repeat(40));
-    //     console.log(`  TOTAL:                   ${totalMs}ms`);
-        
-    //     if (totalMs > 100) {
-    //         console.log(`  ⚠️  Still slow (target <50ms)`);
-    //     } else if (totalMs > 50) {
-    //         console.log(`  ✅ Good (target <50ms)`);
-    //     } else {
-    //         console.log(`  🚀 Excellent! (target <50ms)`);
-    //     }
-    //     console.log('╚════════════════════════════════════╝\n');
-
-    //     // Get next player info
-    //     const nextPlayer = game.players.find(
-    //         p => (p.user._id || p.user).toString() === nextPlayerId.toString()
-    //     );
-
-    //     return {
-    //         diceValue,
-    //         newPosition,
-    //         playerId,
-    //         nextTurn: {
-    //             userId: nextPlayerId,
-    //             username: nextPlayer.user.username || 'Player',
-    //             order: nextPlayer.order
-    //         },
-    //         boardId: game.board,
-    //         serverMs: totalMs
-    //     };
-    // }
-
-    // Background DB sync
     
     async handleDiceRoll(gameId, playerId) {
         console.log('\n╔════════════════════════════════════╗');
@@ -442,7 +229,18 @@ class GameService {
             throw new Error('GAME_NOT_FOUND');
         }
 
-        const winner = await this.validateWinner(game);
+        let winner;
+        let availablePlayers = game.players.filter(p => p.status === 'playing')
+        console.log(availablePlayers,"game players")
+        if(availablePlayers.length < 2) {
+
+            winner = availablePlayers[0].user;
+        }
+        else {
+            winner = await this.validateWinner(game);
+        }
+
+
         if(!winner) throw new Error('GAME_IN_PROGRESS');
         
         await gameRepository.finishGame(gameId, winner._id);
@@ -461,7 +259,8 @@ class GameService {
 
     async handlePlayerLeaveGame(gameId, playerId) {
         await gameRepository.updatePlayerStatus(gameId, playerId, 'left');
-        return await roomService.updatePlayerStatus(gameId, playerId, 'left')
+        let room = await roomService.updatePlayerStatusWithGameId(gameId, playerId, 'left')
+        return room.players.reduce((acc, p) => acc + p.status === 'playing' , 0);
     }
 
     validateGameState(game, playerId) {
@@ -479,11 +278,12 @@ class GameService {
 
     async validateWinner(game) {
         const player = game.players.find(p => p.position === 100);
-        return player.user;
+        return player?.user;
     }
 
     async awardPrize(winnerId, entryFee, playerCount) {
         const totalPrize = entryFee * playerCount;
+        console.log(totalPrize, "total price")
         await playerRepository.awardCoins(winnerId, totalPrize);
         return totalPrize;
     }

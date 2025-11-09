@@ -69,9 +69,7 @@ class NotificationService {
     }
   }
 
-  /**
-   * Send friend request accepted notification
-   */
+  
   async sendFriendAccept(acceptorId, requestorId) {
     try {
       const acceptor = await userService.getUserById(acceptorId);

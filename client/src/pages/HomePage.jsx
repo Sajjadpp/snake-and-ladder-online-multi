@@ -106,7 +106,7 @@ const Home = () => {
     console.log(user, loading,'user and loading')
     if(!user && !loading) {
       console.log(user, 'times of looping')
-      return navigateToLogin('/home')
+      return navigateToLogin('home')
     }
     else {
       let lastClaimed = new Date(user.dailyRewards.lastClaimed);

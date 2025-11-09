@@ -2,7 +2,7 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Dice from '../Dice/Dice';
-import { Crown, WifiOff } from 'lucide-react';
+import { Crown, WifiOff, LogOut } from 'lucide-react';
 
 const PlayerPanel = ({ 
   player, 
@@ -15,6 +15,7 @@ const PlayerPanel = ({
 }) => {
   const [timeLeft, setTimeLeft] = useState(timerMax);
   const isOffline = player?.status === 'offline';
+  const hasLeft = player?.status === 'left';
 
   const timerProgress = useMemo(() => {
     const max = Math.max(1, timerMax);
@@ -71,16 +72,18 @@ const PlayerPanel = ({
   return (
     <motion.div 
       className={`relative px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl border transition-all duration-300 ${
-        isCurrentTurn 
-          ? 'bg-gray-700/60 border-orange-500 shadow-lg shadow-orange-500/20' 
-          : 'bg-gray-800/40 border-gray-700 shadow-md'
-      } ${isOffline ? 'opacity-50 grayscale' : ''} backdrop-blur-sm`}
+        hasLeft
+          ? 'bg-gray-600/40 border-gray-600 opacity-60 grayscale'
+          : isCurrentTurn 
+            ? 'bg-gray-700/60 border-orange-500 shadow-lg shadow-orange-500/20' 
+            : 'bg-gray-800/40 border-gray-700 shadow-md'
+      } ${isOffline && !hasLeft ? 'opacity-50 grayscale' : ''} backdrop-blur-sm`}
       layout
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
     >
       {/* Timer Bar */}
       <AnimatePresence>
-        {isCurrentTurn && !isOffline && (
+        {isCurrentTurn && !isOffline && !hasLeft && (
           <motion.div
             className="absolute top-0 left-0 right-0 h-0.5 rounded-t-xl overflow-hidden"
             style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
@@ -115,12 +118,18 @@ const PlayerPanel = ({
           >
             <motion.div
               className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden border-2 ${
-                isCurrentTurn ? 'border-orange-500' : 'border-gray-700'
+                hasLeft 
+                  ? 'border-gray-600'
+                  : isCurrentTurn 
+                    ? 'border-orange-500' 
+                    : 'border-gray-700'
               }`}
               animate={{
-                boxShadow: isCurrentTurn 
-                  ? '0 0 16px rgba(249, 115, 22, 0.3)' 
-                  : '0 2px 8px rgba(0, 0, 0, 0.3)'
+                boxShadow: hasLeft
+                  ? '0 2px 8px rgba(0, 0, 0, 0.5)'
+                  : isCurrentTurn 
+                    ? '0 0 16px rgba(249, 115, 22, 0.3)' 
+                    : '0 2px 8px rgba(0, 0, 0, 0.3)'
               }}
               transition={{ duration: 0.3 }}
             >
@@ -144,19 +153,28 @@ const PlayerPanel = ({
               </div>
 
               {/* Online Status */}
-              <motion.div 
-                className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-gray-800 ${
-                  isOffline ? 'bg-gray-500' : 'bg-orange-500'
-                }`}
-                animate={{
-                  scale: isOffline ? 1 : [1, 1.15, 1]
-                }}
-                transition={{ duration: 2, repeat: isOffline ? 0 : Infinity }}
-              />
+              {!hasLeft && (
+                <motion.div 
+                  className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border border-gray-800 ${
+                    isOffline ? 'bg-gray-500' : 'bg-orange-500'
+                  }`}
+                  animate={{
+                    scale: isOffline ? 1 : [1, 1.15, 1]
+                  }}
+                  transition={{ duration: 2, repeat: isOffline ? 0 : Infinity }}
+                />
+              )}
+
+              {/* Left Badge */}
+              {hasLeft && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <LogOut size={20} className="text-gray-400" />
+                </div>
+              )}
             </motion.div>
 
             {/* Crown Badge */}
-            {isCurrentTurn && (
+            {isCurrentTurn && !hasLeft && (
               <motion.div
                 className="absolute -top-1.5 -right-1.5"
                 initial={{ scale: 0, rotate: -180 }}
@@ -173,20 +191,20 @@ const PlayerPanel = ({
           <div>
             <div className="flex items-center gap-1 justify-center sm:justify-start">
               <span className={`font-semibold truncate text-xs sm:text-sm ${
-                isMine ? 'text-orange-400' : 'text-gray-200'
+                hasLeft 
+                  ? 'text-gray-500 line-through'
+                  : isMine 
+                    ? 'text-orange-400' 
+                    : 'text-gray-200'
               }`}>
-                {playerUsername}
+                {hasLeft ? `${playerUsername} (Left)` : isMine ? '(You)' : playerUsername}
               </span>
-              {isMine && (
-                <span className="text-orange-500 text-xs font-semibold whitespace-nowrap">
-                  (You)
-                </span>
-              )}
-              {isOffline && <WifiOff size={12} className="text-gray-500 flex-shrink-0" />}
+              
+              {isOffline && !hasLeft && <WifiOff size={12} className="text-gray-500 flex-shrink-0" />}
             </div>
             
             {/* Timer Display */}
-            {isCurrentTurn && !isOffline && (
+            {isCurrentTurn && !isOffline && !hasLeft && (
               <motion.div 
                 className="text-xs font-bold mt-0.5"
                 style={{ color: getTimerColor() }}
@@ -200,18 +218,20 @@ const PlayerPanel = ({
         </div>
 
         {/* Dice Section */}
-        <motion.div
-          className={`flex items-center justify-center flex-shrink-0 ${is1v1 ? '' : 'mt-1'}`}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
-        >
-          <Dice 
-            isMine={isMine}
-            disabled={!isMine || isOffline}
-            player={player?.user?._id}
-          />
-        </motion.div>
+        {!hasLeft && (
+          <motion.div
+            className={`flex items-center justify-center flex-shrink-0 ${is1v1 ? '' : 'mt-1'}`}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.1 }}
+          >
+            <Dice 
+              isMine={isMine}
+              disabled={!isMine || isOffline}
+              player={player?.user?._id}
+            />
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );

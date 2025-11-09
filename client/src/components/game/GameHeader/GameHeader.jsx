@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, LogOut, Volume2, VolumeX, Clock, Users } from 'lucide-react';
-import soundService from '../../../services/sound';
 import { useAuth, useGame } from '../../../contexts';
 
 const ANIMATION_VARIANTS = {
@@ -14,9 +13,7 @@ const ANIMATION_VARIANTS = {
 };
 
 export const GameHeader = ({ 
-  isMuted, 
-  onMuteToggle, 
-  onExit 
+  onSettingClicked
 }) => {
   const [showSettings, setShowSettings] = useState(false);
   const {user} = useAuth();
@@ -24,15 +21,7 @@ export const GameHeader = ({
 
   const is1v1 = players?.length === 2;
 
-  const handleMuteToggle = () => {
-    soundService.toggleMute();
-    onMuteToggle?.();
-  };
-
-  const handleExit = () => {
-    setShowSettings(false);
-    onExit?.();
-  };
+  
 
   return (
     <motion.header 
@@ -104,7 +93,7 @@ export const GameHeader = ({
       <div className="relative flex-shrink-0">
         <motion.button 
           className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md hover:shadow-lg transition-all"
-          onClick={() => setShowSettings(!showSettings)}
+          onClick={onSettingClicked}
           whileHover={{ rotate: 90, scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300 }}
@@ -112,40 +101,6 @@ export const GameHeader = ({
           <Settings size={18} className="sm:w-5 sm:h-5" />
         </motion.button>
         
-        <AnimatePresence>
-          {showSettings && (
-            <motion.div 
-              className="absolute top-full right-0 mt-2 bg-white rounded-lg sm:rounded-xl shadow-xl p-2 min-w-[140px] sm:min-w-[160px] z-30 border border-orange-200"
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.button 
-                className="flex items-center gap-2 sm:gap-3 w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-orange-50 transition-colors text-xs sm:text-sm font-medium text-gray-700"
-                onClick={handleMuteToggle}
-                whileHover={{ x: 2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {isMuted 
-                  ? <VolumeX size={16} className="sm:w-[18px]" /> 
-                  : <Volume2 size={16} className="sm:w-[18px]" />
-                }
-                <span>{isMuted ? 'Unmute' : 'Mute'}</span>
-              </motion.button>
-              
-              <motion.button 
-                className="flex items-center gap-2 sm:gap-3 w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-red-50 transition-colors text-xs sm:text-sm font-medium text-red-500 mt-1"
-                onClick={handleExit}
-                whileHover={{ x: 2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <LogOut size={16} className="sm:w-[18px]" />
-                <span>Exit</span>
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </motion.header>
   );

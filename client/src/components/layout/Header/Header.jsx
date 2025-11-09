@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Home } from 'lucide-react';
+import { Settings, Home, ArrowLeft } from 'lucide-react';
 
 // Components
 import Button from '../../ui/button';
@@ -14,7 +14,7 @@ import { ANIMATION_VARIANTS } from '../../../utils/constants';
 
 const Header = () => {
   const { user } = useAuth();
-  const { navigateToLogin } = useNavigation();
+  const { navigateToLogin , navigateTo, goBack} = useNavigation();
 
   return (
     <motion.header 
@@ -23,9 +23,14 @@ const Header = () => {
       initial="hidden"
       animate="visible"
     >
+     
       <LogoSection />
       
-      <UserSection user={user} onLoginClick={() => navigateToLogin('home')} />
+      <UserSection 
+        user={user} 
+        onLoginClick={() => navigateToLogin('home')}
+        onSettingsClick={()=> navigateTo('/settings')} 
+      />
     </motion.header>
   );
 };
@@ -42,7 +47,7 @@ const LogoSection = () => (
   </div>
 );
 
-const UserSection = ({ user, onLoginClick }) => (
+const UserSection = ({ user, onLoginClick , onSettingsClick}) => (
   <motion.div 
     className="flex items-center space-x-2"
     variants={ANIMATION_VARIANTS.slideLeft}
@@ -67,7 +72,7 @@ const UserSection = ({ user, onLoginClick }) => (
     <Button
       variant="secondary"
       size="small"
-      onClick={() => console.log('Settings clicked')}
+      onClick={onSettingsClick}
     >
       <Settings className="w-4 h-4" />
     </Button>

@@ -8,7 +8,7 @@ export const useNavigation = () => {
   const navigateTo = useCallback((path) => {
     navigate(path);
   }, [navigate]);
-
+  
   const navigateToLogin = useCallback((redirectPath = 'home') => {
     console.log(redirectPath, 'redirection path');
     navigate(`/login?after=${redirectPath}`);

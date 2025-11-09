@@ -21,14 +21,13 @@ const FriendInviteSidebar = ({
     const handleInvite = (friendId) => {
         setInvitedIds(prev => new Set([...prev, friendId]));
         onInvite(friendId, user, roomId);
-        
         // Reset after animation
         setTimeout(() => {
-        setInvitedIds(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(friendId);
-            return newSet;
-        });
+            setInvitedIds(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(friendId);
+                return newSet;
+            });
         }, 2000);
     };
 
@@ -102,7 +101,7 @@ const FriendInviteSidebar = ({
                 ) : (
                     onlineFriends.map((friend, index) => (
                     <motion.div
-                        key={friend.id}
+                        key={friend._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
@@ -127,13 +126,13 @@ const FriendInviteSidebar = ({
                         disabled={invitedIds.has(friend._id)}
                         whileTap={{ scale: 0.9 }}
                         className={`flex-shrink-0 p-2 rounded-lg transition-all ${
-                            invitedIds.has(friend.id)
+                            invitedIds.has(friend._id)
                             ? 'bg-green-500 text-white'
                             : 'bg-orange-500 hover:bg-orange-600 text-white'
                         }`}
                         >
                         <AnimatePresence mode="wait">
-                            {invitedIds.has(friend.id) ? (
+                            {invitedIds.has(friend._id) ? (
                             <motion.svg
                                 key="check"
                                 initial={{ scale: 0, rotate: -180 }}
