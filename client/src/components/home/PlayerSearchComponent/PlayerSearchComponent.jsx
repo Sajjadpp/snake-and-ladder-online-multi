@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Users, Zap, Trophy, Gamepad2 } from 'lucide-react';
 
 const MatchmakingSearch = ({ 
   isSearching, 
@@ -10,7 +11,7 @@ const MatchmakingSearch = ({
 }) => {
   const [searchTime, setSearchTime] = useState(0);
   const [dots, setDots] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isSearching) {
@@ -32,11 +33,11 @@ const MatchmakingSearch = ({
     };
   }, [isSearching]);
 
-    const handleConfirmation = () => {
-        if (matchFound && matchFound.roomId) {
-            navigate(`/room/${matchFound.roomId}`);
-        }
-    };
+  const handleConfirmation = () => {
+    if (matchFound && matchFound.roomId) {
+      navigate(`/room/${matchFound.roomId}`);
+    }
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -52,60 +53,114 @@ const MatchmakingSearch = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 bg-opacity-95 flex items-center justify-center z-50 backdrop-blur-sm"
         >
           <motion.div
             initial={{ scale: 0.8, y: 50 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.8, y: 50 }}
-            className="bg-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full mx-4 text-white shadow-2xl"
+            className="bg-gray-800 border-2 border-orange-500/30 rounded-2xl p-8 max-w-md w-full mx-4 text-white shadow-2xl relative overflow-hidden"
           >
-            {/* Animated Game Piece */}
-            <div className="flex justify-center mb-6">
+            {/* Background Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent pointer-events-none" />
+            
+            {/* Animated Game Piece with Dice */}
+            <div className="flex justify-center mb-6 relative">
+              {/* Outer rotating ring */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                className="absolute w-24 h-24 border-2 border-orange-500/20 rounded-full"
+              />
+              
+              {/* Main container */}
               <motion.div
                 animate={{
-                  y: [0, -15, 0],
-                  rotate: [0, 180, 360],
+                  y: [0, -10, 0],
                 }}
                 transition={{
-                  duration: 2.5,
+                  duration: 2,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="w-20 h-20 bg-gradient-to-br from-gray-600 to-gray-700 rounded-xl flex items-center justify-center shadow-lg border border-gray-600"
+                className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30 relative z-10"
               >
+                {/* Dice dots animation */}
                 <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-lg flex items-center justify-center"
+                  animate={{ 
+                    rotateY: [0, 180, 360],
+                    rotateX: [0, 180, 360]
+                  }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                  className="relative"
                 >
-                  <span className="text-white font-bold text-lg">🎯</span>
+                  <Gamepad2 className="w-10 h-10 text-white" strokeWidth={2.5} />
                 </motion.div>
               </motion.div>
+              
+              {/* Orbiting particles */}
+              {[0, 120, 240].map((angle, i) => (
+                <motion.div
+                  key={i}
+                  animate={{ 
+                    rotate: 360,
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: i * 0.3
+                  }}
+                  className="absolute w-24 h-24"
+                  style={{ transformOrigin: 'center' }}
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.5, 1] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      delay: i * 0.3
+                    }}
+                    className="w-2 h-2 bg-orange-400 rounded-full absolute top-0 left-1/2 -translate-x-1/2"
+                    style={{ 
+                      transform: `rotate(${angle}deg) translateY(-48px)` 
+                    }}
+                  />
+                </motion.div>
+              ))}
             </div>
 
             {/* Searching Text */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-6 relative z-10">
               <motion.h2 
                 className="text-2xl font-bold text-white mb-3 tracking-tight"
-                animate={{ opacity: [0.8, 1, 0.8] }}
+                animate={{ opacity: [0.7, 1, 0.7] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 Finding Players{dots}
               </motion.h2>
               
               <motion.p 
-                className="text-white/75 mb-3 text-sm font-medium"
+                className="text-gray-300 mb-4 text-sm font-medium"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
+                <Users className="w-4 h-4 inline mr-1" />
                 Searching for worthy opponents...
               </motion.p>
 
               {/* Time Counter */}
               <motion.div 
-                className="text-white/90 text-base font-semibold bg-gray-700 inline-block px-4 py-2 rounded-lg"
+                className="text-white text-base font-semibold bg-gray-700/50 inline-block px-5 py-2.5 rounded-lg border border-gray-600/50"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 1 }}
@@ -117,28 +172,43 @@ const MatchmakingSearch = ({
             {/* Pulsing Radar Animation */}
             <div className="relative h-28 mb-6 flex items-center justify-center">
               <motion.div
-                className="absolute w-20 h-20 border-2 border-white/30 rounded-full"
-                animate={{ scale: [1, 1.8, 1], opacity: [0.3, 0, 0.3] }}
+                className="absolute w-20 h-20 border-2 border-orange-500/30 rounded-full"
+                animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
               <motion.div
-                className="absolute w-14 h-14 border-2 border-white/40 rounded-full"
-                animate={{ scale: [1, 1.6, 1], opacity: [0.4, 0, 0.4] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
+                className="absolute w-14 h-14 border-2 border-orange-400/40 rounded-full"
+                animate={{ scale: [1, 1.8, 1], opacity: [0.6, 0, 0.6] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.4 }}
               />
-              <div className="absolute w-8 h-8 bg-white/10 rounded-full border border-white/20 flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full" />
+              <motion.div
+                className="absolute w-10 h-10 border-2 border-orange-300/50 rounded-full"
+                animate={{ scale: [1, 1.5, 1], opacity: [0.7, 0, 0.7] }}
+                transition={{ duration: 2, repeat: Infinity, delay: 0.8 }}
+              />
+              <div className="absolute w-6 h-6 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full border-2 border-white/20 flex items-center justify-center shadow-lg">
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="w-2 h-2 bg-white rounded-full"
+                />
               </div>
             </div>
 
             {/* Cancel Button */}
             <motion.button
-              whileHover={{ scale: 1.02, backgroundColor: "#4B5563" }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onCancel}
-              className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 border border-gray-600"
+              className="w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 border border-gray-600 relative overflow-hidden group"
             >
-              Cancel Search
+              <span className="relative z-10">Cancel Search</span>
+              <motion.div
+                className="absolute inset-0 bg-gray-600"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.3 }}
+              />
             </motion.button>
           </motion.div>
         </motion.div>
@@ -154,45 +224,74 @@ const MatchmakingSearch = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 bg-opacity-95 flex items-center justify-center z-50 backdrop-blur-sm"
         >
           <motion.div
-            initial={{ scale: 0.5, rotate: -180 }}
+            initial={{ scale: 0.5, rotate: -10 }}
             animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0.5, rotate: 180 }}
-            className="bg-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full mx-4 text-white shadow-2xl"
+            exit={{ scale: 0.5, rotate: 10 }}
+            transition={{ type: "spring", damping: 15 }}
+            className="bg-gray-800 border-2 border-green-500/50 rounded-2xl p-8 max-w-md w-full mx-4 text-white shadow-2xl relative overflow-hidden"
           >
+            {/* Success Glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent pointer-events-none" />
+            
             {/* Success Icon */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-              className="flex justify-center mb-6"
+              transition={{ delay: 0.2, type: "spring", damping: 10 }}
+              className="flex justify-center mb-6 relative"
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center border border-gray-600 shadow-lg">
-                <motion.svg
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                  className="w-12 h-12 text-green-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {/* Celebration particles */}
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 0, x: 0, y: 0 }}
+                  animate={{ 
+                    scale: [0, 1, 0],
+                    x: Math.cos(i * Math.PI / 4) * 60,
+                    y: Math.sin(i * Math.PI / 4) * 60,
+                  }}
+                  transition={{ 
+                    duration: 0.8,
+                    delay: 0.3 + i * 0.05,
+                    ease: "easeOut"
+                  }}
+                  className="absolute w-2 h-2 bg-green-400 rounded-full"
+                />
+              ))}
+              
+              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/50 relative z-10">
+                <motion.div
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
                 >
-                  <motion.path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={3}
-                    d="M5 13l4 4L19 7"
-                  />
-                </motion.svg>
+                  <svg
+                    className="w-12 h-12 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <motion.path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M5 13l4 4L19 7"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.5, delay: 0.4 }}
+                    />
+                  </svg>
+                </motion.div>
               </div>
             </motion.div>
 
             {/* Match Details */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-6 relative z-10">
               <motion.h2 
-                className="text-2xl font-bold text-white mb-4 tracking-tight"
+                className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-green-500 mb-4 tracking-tight"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -201,18 +300,23 @@ const MatchmakingSearch = ({
               </motion.h2>
 
               <motion.div 
-                className="bg-gray-700/50 border border-gray-600 rounded-xl p-4 mb-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                className="bg-gray-700/50 border border-green-500/30 rounded-xl p-4 mb-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                <div className="text-lg font-semibold text-white mb-2">
-                  Room: <span className="text-green-400">#{matchFound.roomId}</span>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Trophy className="w-5 h-5 text-green-400" />
+                  <div className="text-lg font-semibold text-white">
+                    Room: <span className="text-green-400">#{matchFound.roomId}</span>
+                  </div>
                 </div>
-                <div className="text-white/75 text-sm font-medium">
+                <div className="text-gray-300 text-sm font-medium flex items-center justify-center gap-2">
+                  <Users className="w-4 h-4" />
                   {matchFound.players?.length || 0} players ready
                 </div>
-                <div className="text-white/60 text-xs mt-1">
+                <div className="text-gray-400 text-xs mt-2 flex items-center justify-center gap-2">
+                  <Zap className="w-3 h-3" />
                   Game: {matchFound.gameType || 'Quick Play'}
                 </div>
               </motion.div>
@@ -225,18 +329,28 @@ const MatchmakingSearch = ({
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <h3 className="font-semibold text-white mb-2 text-sm">Players:</h3>
+                  <h3 className="font-semibold text-white mb-3 text-sm flex items-center justify-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Players:
+                  </h3>
                   <div className="space-y-2">
                     {matchFound.players.map((player, index) => (
                       <motion.div
                         key={player.id}
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.6 + index * 0.1 }}
-                        className="flex items-center justify-between bg-gray-700/30 border border-gray-600 rounded-lg p-2 text-sm"
+                        transition={{ delay: 0.6 + index * 0.1, type: "spring" }}
+                        className="flex items-center justify-between bg-gray-700/50 border border-gray-600/50 rounded-lg p-3 text-sm"
                       >
-                        <span className="text-white/90">👤 {player.name}</span>
-                        <span className="text-green-400 text-xs font-medium">Ready</span>
+                        <span className="text-white font-medium flex items-center gap-2">
+                          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-xs">
+                            {player.name?.charAt(0)?.toUpperCase()}
+                          </div>
+                          {player.name}
+                        </span>
+                        <span className="text-green-400 text-xs font-semibold bg-green-500/10 px-2 py-1 rounded-full border border-green-500/30">
+                          ✓ Ready
+                        </span>
                       </motion.div>
                     ))}
                   </div>
@@ -245,9 +359,9 @@ const MatchmakingSearch = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 relative z-10">
               <motion.button
-                whileHover={{ scale: 1.02, backgroundColor: "#4B5563" }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onCancel}
                 className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 border border-gray-600"
@@ -255,10 +369,10 @@ const MatchmakingSearch = ({
                 Cancel
               </motion.button>
               <motion.button
-                whileHover={{ scale: 1.02, backgroundColor: "#059669" }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleConfirmation}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 border border-green-500"
+                className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-green-500/30 border border-green-400/50"
               >
                 Join Game ✓
               </motion.button>

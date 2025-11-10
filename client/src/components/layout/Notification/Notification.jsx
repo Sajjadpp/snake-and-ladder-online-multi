@@ -8,7 +8,7 @@ import {
 import { useNotification } from '../../../contexts/NotificationContext';
 
 const NotificationSidebar = ({ isOpen, onClose }) => {
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState('unread');
   const [searchQuery, setSearchQuery] = useState('');
   
   const {
@@ -68,6 +68,9 @@ const NotificationSidebar = ({ isOpen, onClose }) => {
     e.stopPropagation();
     await deleteNotification(notificationId);
   };
+
+  // Check if there are any read notifications
+  const hasReadNotifications = notifications.some(n => n.read);
 
   return (
     <>
@@ -154,24 +157,29 @@ const NotificationSidebar = ({ isOpen, onClose }) => {
               ))}
             </div>
 
-            <div className="flex gap-1">
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllAsRead}
-                  className="p-1 text-gray-400 hover:text-green-500 transition-colors"
-                  title="Mark all as read"
-                >
-                  <Check className="w-4 h-4" />
-                </button>
-              )}
-              <button
-                onClick={deleteAllRead}
-                className="p-1 text-gray-400 hover:text-orange-500 transition-colors"
-                title="Clear read"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
+            {/* Only show action buttons if there are notifications */}
+            {notifications.length > 0 && (
+              <div className="flex gap-1">
+                {unreadCount > 0 && (
+                  <button
+                    onClick={markAllAsRead}
+                    className="p-1 text-gray-400 hover:text-green-500 transition-colors"
+                    title="Mark all as read"
+                  >
+                    <Check className="w-4 h-4" />
+                  </button>
+                )}
+                {filteredNotifications.length !== 0 && (
+                  <button
+                    onClick={deleteAllRead}
+                    className="p-1 text-gray-400 hover:text-orange-500 transition-colors"
+                    title="Clear read"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -293,7 +301,7 @@ const NotificationSidebar = ({ isOpen, onClose }) => {
           </AnimatePresence>
         </div>
 
-        {/* Footer */}
+        {/* Footer - Only show if there are notifications */}
         {notifications.length > 0 && (
           <div className="flex-shrink-0 p-4 border-t border-gray-700 bg-gray-900/30">
             <div className="flex gap-2">

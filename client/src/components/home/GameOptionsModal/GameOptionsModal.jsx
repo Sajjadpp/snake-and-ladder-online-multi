@@ -42,14 +42,14 @@ const GameOptionsModal = ({ isOpen, onClose, onQuickPlay, onCreateRoom }) => {
       label: 'Browse Lounges',
       icon: Grid3X3,
       description: 'Explore game rooms',
-      onClick: withSound(() => console.log('Browse Lounges clicked'))
+      onClick: withSound(onCreateRoom)
     },
     {
       id: 'leaderboard',
       label: 'Leaderboard',
       icon: Trophy,
       description: 'See top players',
-      onClick: withSound(() => console.log('Leaderboard clicked'))
+      onClick: withSound(()=> navigate('/leaderboard'))
     },
     {
       id: 'friends',

@@ -31,7 +31,6 @@ const FriendInviteSidebar = ({
             });
         }, 2000);
     };
-    console.log(currentPlayers,'currentPlayers')
     useEffect(() => {
         if(!user && !isOpen) return;
         getAllFriends()

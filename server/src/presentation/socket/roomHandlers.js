@@ -21,7 +21,7 @@ module.exports = (io, socket) => {
 
         try {
             let changePlayerStatus = await roomService.updatePlayerStatus(roomId, userId, status)
-
+            console.log('updated player status', changePlayerStatus)
             if(changePlayerStatus) {
                 io.in(roomId).emit("toogle_player_status",{roomId, userId, status})
             }

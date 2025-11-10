@@ -29,7 +29,7 @@ const BasePage = () => {
     {
       label: 'Leaderboard',
       icon: 'Trophy',
-      onClick: () => console.log('Leaderboard clicked')
+      onClick: () => navigate('/leaderboard')
     },
     {
       label: 'Achievements',

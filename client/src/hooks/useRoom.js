@@ -62,8 +62,10 @@ export const useRoom = () => {
     console.log(socket, user, roomData,'new data...')
     if (!socket || !user || !roomData) return;
     
-    const currentPlayer = roomData.players.find(p => p._id === user._id);
+    const currentPlayer = roomData.players.find(p => p.user._id === user._id);
+    console.log(currentPlayer,'current player')
     const currentStatus = currentPlayer?.status;
+    console.log(currentStatus,'currentStatus')
     const newStatus = currentStatus === 'waiting' ? 'ready' : 'waiting';
     
     socket.emit('player_status_toogle', { 
@@ -155,6 +157,7 @@ export const useRoom = () => {
     };
 
     const handlePlayerStatusToggle = ({ roomId: eventRoomId, userId, status }) => {
+      console.log('updating the room player status', eventRoomId, status)
       if (eventRoomId !== roomId) return;
       
       setRoomData(prev => {
@@ -162,8 +165,10 @@ export const useRoom = () => {
         
         return {
           ...prev, 
-          players: prev.players.map(p => 
-            p._id === userId ? { ...p, status } : p
+          players: prev.players.map(p => {
+            console.log(p,'player data')
+            return p.user._id.toString() === userId.toString() ? { ...p, status } : p
+          }
           )
         };
       });

@@ -33,6 +33,7 @@ import FriendRequestHandler from './handler/friendRequestHandler/FriendRequestHa
 import soundService from './services/sound';
 import MusicPermissionModal from './components/ui/Popups/SoundPermModal';
 import GameInvitationHandler from './handler/gameInivitationHandler/GameInvitationHandler';
+import Leaderboard from './pages/Leaderboard';
 
 const App = () => {
   return (
@@ -151,6 +152,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<AuthPage />} />
       <Route path="/game/:gameId" element={<GamePage/>} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/friend/:userId" element={<FriendsPage />} />
       <Route path="/game-result/:gameId" element={<GameWinnerPage />} /> 
       

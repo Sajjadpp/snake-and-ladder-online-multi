@@ -62,7 +62,7 @@ export const ProfileModal = ({ isOpen, onClose, profile }) => {
                     )}
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-1">{profile.username}</h3>
-                  <p className="text-gray-400 text-sm">@{profile.userId}</p>
+                  <p className="text-gray-400 text-sm">@{profile.id}</p>
                 </div>
 
                 <div className="space-y-3">

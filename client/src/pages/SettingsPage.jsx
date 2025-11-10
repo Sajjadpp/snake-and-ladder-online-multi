@@ -565,16 +565,6 @@ const SettingsPage = () => {
               {renderContent()}
             </motion.div>
           </AnimatePresence>
-          
-          {/* Swipe Hint */}
-          <motion.div 
-            className="flex justify-center items-center gap-2 mt-6 text-white/50 text-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            <span>Swipe left/right to navigate</span>
-          </motion.div>
         </div>
       </motion.main>
 

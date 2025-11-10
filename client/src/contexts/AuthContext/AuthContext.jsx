@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Login failed:', error);
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+        error: error.response?.data?.error || 'Login failed' 
       };
     } finally {
       dispatch({ type: authActions.SET_LOADING, payload: false });
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Registration failed:', error);
       return { 
         success: false, 
-        error: error.response?.data?.message || 'Registration failed' 
+        error: error.response?.data?.error || 'Registration failed' 
       };
     } finally {
       dispatch({ type: authActions.SET_LOADING, payload: false });

@@ -101,7 +101,7 @@ const PlayerWaitingPage = () => {
         onInviteGame={()=> setIsFriendList(true)}
         onToggleReady={handleToggleReady}
         onStartGame={handleStartGame}
-        playerStatus={roomData?.players?.find(p => p._id === roomData?.currentUser?._id)?.status}
+        playerStatus={roomData?.players?.find(p => p.user._id === user._id)?.status}
       />
 
       <ExitConfirmModal 
