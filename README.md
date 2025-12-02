@@ -28,7 +28,7 @@ A real-time multiplayer Snake and Ladder game built using the MERN Stack with So
 🧑‍🎓 Custom Avatars
 
 
-☁️ Deployed on AWS with Nginx + SSL
+☁️ Deployed on render + vercel
 
 
 
@@ -66,31 +66,6 @@ JWT Authentication
 Deployment
 
 
-
-
-📂 Project Structure
-snake-ladder-multi-online/
-├── client/                 # React Frontend
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── context/
-│   │   ├── services/
-│   │   └── App.js
-│   └── package.json
-│
-├── server/                 # Node.js Backend
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── routes/
-│   │   ├── socket/
-│   │   ├── models/
-│   │   └── server.js
-│   └── package.json
-│
-└── README.md
-
-
 ⚙️ Installation
 
 
@@ -126,7 +101,7 @@ npm start
 
 
 Visit:
-👉 http://localhost:3000
+👉 http://localhost:5173
 
 
 
@@ -164,13 +139,7 @@ Used MongoDB aggregation for reward cycles and leaderboard stats.
 Managed JWT tokens with React context and Axios interceptors.
 
 
-Deployed a secure MERN app with Nginx + SSL on AWS.
-
-
-
-📸 Screenshots (optional)
-
-(You can add images later like board UI, login page, leaderboard, etc.)
+Deployed a secure MERN app with Render + Vercel.
 
 
 ✨ Future Enhancements
